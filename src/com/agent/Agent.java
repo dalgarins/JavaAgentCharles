@@ -21,39 +21,17 @@ public class Agent {
                     // Javassist
                     try {
                         ClassPool cp = ClassPool.getDefault();
+                        //get the class that performs validation of the serial.
                         CtClass cc = cp.get("com.xk72.charles.gui.Licence");
-                        //CtClass cc2 = cp.get("com.xk72.charles.gui.Licence.SerialException");
+                        //I get the method that validates the serial.
                         CtMethod m = cc.getDeclaredMethod("c", new CtClass[]{cp.get("java.lang.String"), cp.get("java.lang.String")});
-
-                        //CtConstructor c = cc.getDeclaredConstructor(new CtClass[]{cp.get("java.lang.String"), cp.get("java.lang.String")});
-//CtMethod m2 = cc.getDeclaredMethod("c", new CtClass[]{cp.get("java.lang.String"), cp.get("java.lang.String")});
-                        //m.addLocalVariable("elapsedTime", CtClass.longType);
-                        /*m.insertBefore("elapsedTime = System.currentTimeMillis();");
-                         m.insertAfter("{elapsedTime = System.currentTimeMillis() - elapsedTime;"
-                         + "System.out.println(\"Method Executed in ms: \" + elapsedTime);}");*/
-                        /*m.insertBefore("{if (str.equals(str)) {"
-                         + "            return true;"
-                         + "        }}");*/
-                        //m.insertAt(1,"{System.out.println(\"Hola \");}");
-                        List<AttributeInfo> l = m.getMethodInfo().getAttributes();
-                        /*for (int i = 0; i < l.size(); i++) {
-                         System.out.println(i);
-                            
-                         //l.get(i).getConstPool().print();
-                         System.out.println(l.get(i).getName());
-                         }*/
+                        //I get the list of attributes of the method including constant Pool.
+                        List<AttributeInfo> l = m.getMethodInfo().getAttributes();             
+                        //change the serial blacklist, so the program does not recognize it.
+                        l.get(0).getConstPool().setStringInfo("1beda9831c78994f43", "bbeda9831c78994f43");
                         System.out.println(l.get(0).getConstPool().getStringInfo(17));
-                        l.get(0).getConstPool().setStringInfo(17, "bbeda9831c78994f43");
-                        l.get(0).getConstPool().setStringInfo(17, "rbeda9831c78994f43");
-                        l.get(0).getConstPool().setStringInfo(17, "kbeda9831c78994f43");
-                        l.get(0).getConstPool().setStringInfo("1beda9831c78994f43", "bbeda9831c78994f43jhgjkghjgkjghjggkhkjhgkjghkhj");
-                        System.out.println(l.get(0).getConstPool().getStringInfo(17));
-                        //m.getMethodInfo().getConstPool().getStringInfo(10);
-                        //l.get(0).getConstPool().print();
-                        //l.get(0).getConstPool().getStringInfo(1);
-                        /*c.setBody("{this.d = $1;\n"
-                         + "    this.c = true;}");*/
-
+                        
+                        //list of valid users and serials that have been blocked.
                         /**
                          * # NOME: # # anthony ortolani # # KEY: # #
                          * a4036b2761c9583fda #
@@ -66,9 +44,7 @@ public class Agent {
                          *
                          * # NOME: # # Juan A. Rodriguez # # KEY: # #
                          * da0e7561b10d974216 #
-                         */
-                        //m.addCatch("{}", cp.get("com.xk72.charles.gui.Licence$SerialException"));
-                        //System.out.println(m.getMethodInfo().getDescriptor().contains("5bae9d8cdea32760ae"));
+                         */                  
                         byte[] byteCode = cc.toBytecode();
                         cc.detach();
                         return byteCode;
